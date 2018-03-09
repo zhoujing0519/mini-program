@@ -1,6 +1,6 @@
 <template>
   <div class="page event">
-
+    这里是活动页面
   </div>
 </template>
 
