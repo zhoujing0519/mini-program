@@ -1,5 +1,6 @@
 import Vue from 'vue'
 import App from './App'
+import 'common/stylus/app.styl'
 
 Vue.config.productionTip = false
 App.mpType = 'app'
@@ -14,7 +15,7 @@ export default {
     window: {
       backgroundTextStyle: 'light',
       navigationBarBackgroundColor: '#fff',
-      navigationBarTitleText: 'WeChat',
+      navigationBarTitleText: '运河五号',
       navigationBarTextStyle: 'black'
     }
   }
