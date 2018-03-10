@@ -14,9 +14,9 @@ export default {
     pages: [], // Will be filled in webpack
     window: {
       backgroundTextStyle: 'light',
-      navigationBarBackgroundColor: '#fff',
+      navigationBarBackgroundColor: '#591919',
       navigationBarTitleText: '运河五号',
-      navigationBarTextStyle: 'black'
+      navigationBarTextStyle: '#fff'
     }
   }
 }
