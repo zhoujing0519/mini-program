@@ -1,0 +1,63 @@
+@import '../../common/stylus/var.styl'
+
+.event
+  .nav
+    font-size: 0
+    border-bottom: 1px solid $color-border
+    .item
+      position: relative
+      display: inline-block
+      vertical-align: top
+      width: 50%
+      line-height: 36px
+      font-size: $font-l
+      color: $color-text-l
+      text-align: center
+      &.active
+        color: $color-theme
+        &::after
+          content: ''
+          position: absolute
+          left: 50%
+          bottom: 0
+          margin-left: -15px
+          display: inline-block
+          width: 30px
+          height: 2px
+          background: currentColor
+  .event-list
+    padding-left: 15px
+    .item
+      display: flex
+      align-items: center
+      padding: 10px 15px 10px 0
+      border-bottom: 1px solid $color-border
+      image
+        flex: 0 0 132px
+        width: 132px
+        height: 80px
+      .content
+        flex: 1
+        padding-left: 10px
+        text-align: right
+        .title, .desc
+          text-align: left
+        .title
+          font-size: $font-m
+          color: $color-text-d
+          margin-bottom: .4em
+        .desc
+          font-size: $font-s
+          color: $color-text
+          line-height: 1.5
+          max-height: 3em
+          overflow: hidden
+        .btn
+          display: inline-block
+          padding: 0 10px
+          line-height: 22px
+          text-align: center
+          font-size: $font-m
+          color: #fff
+          border-radius: 10px
+          background: $color-theme
