@@ -1,0 +1,95 @@
+@import '../../common/stylus/var.styl'
+
+.shop
+  swiper
+    height: 200px
+    swiper-item
+      image
+        width: 100%
+        height: 100%
+  .shop-wrap
+    padding: 0 10px
+    .shop-name
+      font-size: 18px
+      color: $color-text-d
+      font-weight: bold
+      line-height: 48px
+      border-bottom: 1px solid $color-border
+    .contact-list
+      .item
+        display: flex
+        align-items: center
+        height: 40px
+        border-bottom: 1px solid $color-border
+        .icon
+          flex: 0 0 20px
+          width: 20px
+          height: 20px
+        .desc
+          flex: 1
+          padding: 0 1.5em
+          font-size: $font-m
+          color: $color-text
+    .shop-intro
+      padding: 20px 0
+      .title
+        font-size: $font-l
+        color: $color-text-d
+        font-weight: bold
+        margin-bottom: 1em
+      .desc
+        font-size: $font-m
+        color: $color-text
+        line-height: 1.5
+  .shop-msg
+    padding: 0 10px
+    .title
+      font-size: $font-l
+      line-height: 40px
+    .msg-list
+      .item
+        display: flex
+        padding: 10px 0
+        &:first-child
+          padding-top: 0
+        &:not(:last-child)
+          border-bottom: 1px solid $color-border
+        image
+          flex: 0 0 40px
+          width: 40px
+          height: 40px
+          border-radius: 50%
+        .content
+          flex: 1
+          padding-left: 18px
+          .top
+            display: flex
+            justify-content: space-between
+            align-items: center
+            height: 3em
+            font-size: $font-s
+            color: $color-text
+          .desc
+            font-size: $font-m
+            color: $color-text-d
+            line-height: 1.5
+  .more
+    font-size: $font-m
+    color: $color-text-l
+    line-height: 40px
+    text-align: center
+    border-top: 1px solid $color-border
+  .leave-msg
+    display: flex
+    align-items: center
+    height: 40px
+    padding-left: 14px
+    image
+      flex: 0 0 20px
+      width: 20px
+      height: 20px
+    .text
+      flex: 1
+      padding: 0 2em
+      font-size: $font-m
+      color: $color-text-l

@@ -4,7 +4,7 @@
       <!-- 轮播图 -->
       <swiper :indicator-dots="true" indicator-color="#000" indicator-active-color="#fff">
         <swiper-item v-for="(swiper, index) in imgUrls" :key="index">
-          <image :src="swiper"/>
+          <image :src="swiper" />
         </swiper-item>
       </swiper>
       <!-- 导航 -->
@@ -52,6 +52,7 @@
 
 <script>
   import card from '@/components/card'
+  import banner from '@/components/banner'
 
   export default {
     data(){
@@ -64,18 +65,23 @@
     created(){
       // 调用应用实例的方法获取全局数据
       this.getUserInfo()
-      this.imgUrls = [
-        '/static/banner/1.jpg',
-        '/static/banner/1.jpg',
-        '/static/banner/1.jpg',
-        '/static/banner/1.jpg',
-        '/static/banner/1.jpg',
-      ]
+      this.getBanner()
     },
     components: {
       card,
+      banner,
     },
     methods: {
+      // 获取banner图
+      getBanner(){
+        this.imgUrls = [
+          '/static/banner/1.jpg',
+          '/static/banner/1.jpg',
+          '/static/banner/1.jpg',
+          '/static/banner/1.jpg',
+          '/static/banner/1.jpg',
+        ]
+      },
       bindViewTap () {
         const url = '../logs/logs'
         wx.navigateTo({ url })
