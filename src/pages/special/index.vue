@@ -31,6 +31,7 @@
 
 <script>
   import {baseMixin} from '@/common/js/mixin'
+  import {formatTime} from '@/common/js/format'
 
   export default {
     mixins: [baseMixin],
@@ -77,27 +78,24 @@
       },
       // 获取活动
       getEvents(){
+        const self = this
+
         wx.request({
-          url: 'http://yunhe5.horsevision.cn/miniprogram/web/index.php?r=api/article/article-list',
+          url: 'https://yunhe5.horsevision.cn/miniprogram/web/index.php?r=api/article/article-list',
           success(res){
-            console.log(res)
+            const {status, mes} = res.data
+
+            if(status == 200){
+              const {articleList, pageInfo} = mes
+
+              self.events = articleList.map(({title, add_time}) => ({
+                imgUrl: '/static/test/1.jpg',
+                title,
+                updatetime: formatTime(add_time, '-'),
+              }))
+            }
           },
         })
-        this.events = [
-          {
-            imgUrl: '/static/test/1.jpg',
-            title: '【五号活动】感谢有你，在古运河邂逅这座城的温暖',
-            updatetime: '2018-02-02',
-          },{
-            imgUrl: '/static/test/1.jpg',
-            title: '【五号活动】感谢有你，在古运河邂逅这座城的温暖',
-            updatetime: '2018-02-02',
-          },{
-            imgUrl: '/static/test/1.jpg',
-            title: '【五号活动】感谢有你，在古运河邂逅这座城的温暖',
-            updatetime: '2018-02-02',
-          },
-        ]
       },
     },
   }
