@@ -10,12 +10,12 @@
     <div class="shop-wrap">
       <h1 class="shop-name">米店百人咖啡</h1>
       <ul class="contact-list">
-        <li class="item">
+        <li class="item" @click="makePhoneCall">
           <image class="icon" src="/static/icons/icon-tel.png" />
           <span class="desc">86499890</span>
           <image class="icon" src="/static/icons/icon-arr.png" />
         </li>
-        <li class="item">
+        <li class="item" @click="openLocation">
           <image class="icon" src="/static/icons/icon-pos.png" />
           <span class="desc">三堡街141号创意街区21号</span>
           <image class="icon" src="/static/icons/icon-arr.png" />
@@ -64,9 +64,23 @@
   export default {
     data(){
       return {
+        shop: {
+          phoneNumber: '88251173'
+        },
         imgUrls: [],
         msgs: [],
       }
+    },
+    onLoad(){
+      console.log(this.$root.$mp.query)
+      wx.showLoading({
+        title: '加载中...'
+      })
+    },
+    onReady(){
+      setTimeout(() => {
+        wx.hideLoading()
+      }, 500)
     },
     created(){
       this.getBanner()
@@ -101,6 +115,19 @@
             msg: '还是很不错的。'
           },
         ]
+      },
+      // 拨打电话
+      makePhoneCall(){
+        wx.makePhoneCall({
+          phoneNumber: this.shop.phoneNumber
+        })
+      },
+      // 获取商家位置
+      openLocation(){
+        wx.openLocation({
+          latitude: 12,
+          longitude: 12,
+        })
       },
     },
     components: {

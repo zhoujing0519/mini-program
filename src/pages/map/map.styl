@@ -1,0 +1,82 @@
+@import '../../common/stylus/var.styl'
+
+.map
+  display: flex
+  flex-direction: column
+  height: 100%
+  overflow: hidden
+  .nav-wrap
+    display: flex
+    flex: 0 0 44px
+    height: 44px
+    background: $color-theme
+    .search
+      display: flex
+      justify-content: center
+      align-items: center
+      flex: 0 0 44px
+      width: 44px
+      height: 44px
+      image
+        width: 24px
+        height: 24px
+    .nav-list
+      flex: 1
+      display: flex
+      align-items: center
+      flex-wrap: nowrap
+      white-space: nowrap
+      overflow: hidden
+      .item
+        display: inline-block
+        vertical-align: top
+        line-height: 44px
+        margin: 0 12px
+        &.active
+          .text
+            background: rgba(0, 0, 0, .1)
+        .text
+          display: inline-block
+          padding: 0 1em
+          white-space: nowrap
+          line-height: 2
+          border-radius: 1em
+          font-size: $font-m
+          color: #fff
+  .map-wrap
+    flex: 1
+  .shop-wrap
+    flex: 0 0 186px
+    height: 186px
+    .total
+      display: flex
+      justify-content: center
+      align-items: center
+      font-size: $font-m
+      color: $color-theme
+      text-align: center
+      line-height: 40px
+      border-top: 1px solid $color-border
+      border-bottom: 1px solid $color-border
+      box-shadow: 0 5px 6px rgba(0, 0, 0, .02)
+      image
+        width: 18px
+        height: 18px
+    .shop-list
+      display: flex
+      flex-wrap: nowrap
+      padding: 18px 14px
+      font-size: 0
+      white-space: nowrap
+      overflow: hidden
+      .shop
+        display: inline-block
+        vertical-align: top
+        margin-right: 14px
+        image
+          width: 132px
+          height: 80px
+        .name
+          margin-top: 1em
+          font-size: $font-m
+          color: $color-text-d

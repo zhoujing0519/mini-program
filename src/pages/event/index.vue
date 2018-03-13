@@ -2,12 +2,15 @@
   <div class="page event">
     <!-- 分类 -->
     <nav class="nav">
-      <a class="item active" href="javascript:;">店铺信息</a>
-      <a class="item" href="javascript:;">优惠活动</a>
+      <span class="item" 
+        :class="{active: index === type}"
+        v-for="(item, index) in navs" 
+        :key="index" 
+        @click="select(index)">{{item}}</span>
     </nav>
     <!-- 活动列表 -->
     <ul class="event-list">
-      <li class="item" v-for="(item, index) in list" :key="index">
+      <li class="item" v-for="(item, index) in currentList" :key="index" @click="linkTo('shop', index)">
         <image :src="item.imgUrl" />
         <div class="content">
           <h2 class="title">{{item.title}}</h2>
@@ -20,18 +23,33 @@
 </template>
 
 <script>
+  import {baseMixin} from '@/common/js/mixin'
+
   export default {
+    mixins: [baseMixin],
     data(){
       return {
-        list: [],
+        navs: ['店铺信息', '优惠活动'],
+        type: 0,
+        list: {},
       }
+    },
+    computed: {
+      currentList(){
+        return this.list[this.type]
+      },
     },
     created(){
       this.getList()
     },
     methods: {
+      select(index){
+        this.type = index
+      },
       getList(){
-        this.list = [
+        const {type} = this
+        if(!this.list[type]) this.list[type] = []
+        this.list[type] = [
           {
             imgUrl: '/static/test/1.jpg',
             title: '米店百人咖啡',

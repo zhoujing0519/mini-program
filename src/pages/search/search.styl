@@ -1,0 +1,61 @@
+@import '../../common/stylus/var.styl'
+
+.search
+  .search-wrap
+    display: flex
+    align-items: center
+    padding: 7px 15px
+    border-bottom: 1px solid $color-border
+    .search-input
+      display: flex
+      align-items: center
+      flex: 1
+      height: 30px
+      background: #e8e8e8
+      border-radius: 15px
+      padding: 0 8px
+      .icon-search, .icon-clear
+        flex: 0 0 16px
+        width: 16px
+      .input
+        flex: 1
+        padding: 0 .5em
+        font-size: $font-m
+        color: $color-text-ll
+    .cancel
+      padding-left: 15px
+      font-size: $font-m
+      color: $color-text-d
+  .hot-wrap
+    padding: 16px 14px
+    .title
+      font-size: $font-m
+      margin-bottom: 1em
+    .hot-list
+      font-size: 0
+      .item
+        display: inline-block
+        vertical-align: top
+        font-size: $font-m
+        color: $color-theme
+        padding: 0 1.5em
+        margin: 0 16px 16px 0
+        background: #ded1d1
+        border-radius: 15px
+        line-height: 30px
+  .search-fixed
+    padding-left: 20px
+    .search-list
+      .item
+        display: flex
+        align-items: center
+        height: 44px
+        border-bottom: 1px solid $color-border
+        image
+          flex: 0 0 12px
+          width: 12px
+        .text
+          flex: 1
+          font-size: $font-m
+          color: $color-text-d
+          padding: 0 1em

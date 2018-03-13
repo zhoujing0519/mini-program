@@ -9,9 +9,9 @@
       </swiper>
       <!-- 导航 -->
       <nav class="nav">
-        <a class="link" href="/pages/event/event">特色<br>活动</a>
+        <a class="link" href="/pages/special/special">特色<br>活动</a>
         <a class="link" href="/pages/event/event">创客<br>联盟</a>
-        <a class="link" href="/pages/event/event">街区<br>导览</a>
+        <a class="link" href="/pages/map/map">街区<br>导览</a>
       </nav>
     </div>
     <div class="introduction">

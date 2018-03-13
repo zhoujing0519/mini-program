@@ -3,18 +3,21 @@
     <!-- 知名商户 -->
     <div class="shop-wrap">
       <h2 class="title">知名商户</h2>
-      <ul class="shop-list">
-        <li class="shop" v-for="(shop, index) in shops" :key="index">
+      <scroll-view class="shop-list" scroll-x>
+        <view class="shop" 
+          v-for="(shop, index) in shops" 
+          :key="index" 
+          @click="linkTo('shop', index)">
           <image :src="shop.logo"/>
           <span class="name">{{shop.name}}</span>
-        </li>
-      </ul>
+        </view>
+      </scroll-view>
     </div>
     <!-- 特色活动 -->
     <div class="event-wrap">
       <h2 class="title">特色活动</h2>
       <ul class="event-list">
-        <li class="event" v-for="(event, index) in events" :key="index">
+        <li class="event" v-for="(event, index) in events" :key="index" @click="linkTo('detail', index)">
           <image :src="event.imgUrl"/>
           <div class="content">
             <h3 class="event-title">{{event.title}}</h3>
@@ -27,7 +30,10 @@
 </template>
 
 <script>
+  import {baseMixin} from '@/common/js/mixin'
+
   export default {
+    mixins: [baseMixin],
     data(){
       return {
         shops: [],
@@ -71,6 +77,12 @@
       },
       // 获取活动
       getEvents(){
+        wx.request({
+          url: 'http://yunhe5.horsevision.cn/miniprogram/web/index.php?r=api/article/article-list',
+          success(res){
+            console.log(res)
+          },
+        })
         this.events = [
           {
             imgUrl: '/static/test/1.jpg',
