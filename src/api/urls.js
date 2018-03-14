@@ -1,0 +1,17 @@
+const url_base = 'https://yunhe5.horsevision.cn/miniprogram/web/index.php?r=api'
+const connect = (modules, method) => `${url_base}/${modules}/${method}`
+
+// 文章：列表
+export const url_article_list = connect('article', 'article-list')
+// 文章：详情
+export const url_article_detail = connect('article', 'article-detail')
+// 商家：分类
+export const url_shop_category = connect('shops', 'shop-category')
+// 商家：列表
+export const url_shop_list = connect('shops', 'shop-list')
+// 商家：详情
+export const url_shop_detail = connect('shops', 'shop-detail')
+// 商家：添加评论
+export const url_shop_add_comment = connect('shops', 'add-comment')
+// 商家：评论列表
+export const url_shop_comment_list = connect('shops', 'comment-list')

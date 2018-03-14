@@ -3,11 +3,12 @@
     <!-- 知名商户 -->
     <div class="shop-wrap">
       <h2 class="title">知名商户</h2>
-      <scroll-view class="shop-list" scroll-x>
+      <scroll-view class="shop-list" 
+        scroll-x>
         <view class="shop" 
           v-for="(shop, index) in shops" 
           :key="index" 
-          @click="linkTo('shop', index)">
+          @click="linkTo('shop', shop.id)">
           <image :src="shop.logo"/>
           <span class="name">{{shop.name}}</span>
         </view>
@@ -16,15 +17,20 @@
     <!-- 特色活动 -->
     <div class="event-wrap">
       <h2 class="title">特色活动</h2>
-      <ul class="event-list">
-        <li class="event" v-for="(event, index) in events" :key="index" @click="linkTo('detail', index)">
+      <scroll-view class="event-list"
+        scroll-y
+        :bindscrolltolower="loadMore">
+        <view class="event"
+          v-for="(event, index) in events" 
+          :key="index" 
+          @click="linkTo('detail', event.id)">
           <image :src="event.imgUrl"/>
           <div class="content">
             <h3 class="event-title">{{event.title}}</h3>
             <span class="updatetime">{{event.updatetime}}</span>
           </div>
-        </li>
-      </ul>
+        </view>
+      </scroll-view>
     </div>
   </div>
 </template>
@@ -32,6 +38,8 @@
 <script>
   import {baseMixin} from '@/common/js/mixin'
   import {formatTime} from '@/common/js/format'
+  import {url_article_list, url_shop_list} from '@/api/urls'
+  import {request} from '@/api/request'
 
   export default {
     mixins: [baseMixin],
@@ -41,61 +49,59 @@
         events: [],
       }
     },
-    created(){
-      this.getShops()
-      this.getEvents()
+    onLoad(){
+      this.getSpecialData()
     },
     methods: {
+      // 获取页面数据
+      getSpecialData(){
+        this.getShops()
+        this.getEvents()
+      },
       // 获取商户
       getShops(){
-        this.shops = [
-          {
-            logo: '/static/logos/1.jpg',
-            name: '微信'
-          },{
-            logo: '/static/logos/1.jpg',
-            name: '微信'
-          },{
-            logo: '/static/logos/1.jpg',
-            name: '微信'
-          },{
-            logo: '/static/logos/1.jpg',
-            name: '微信'
-          },{
-            logo: '/static/logos/1.jpg',
-            name: '微信'
-          },{
-            logo: '/static/logos/1.jpg',
-            name: '微信'
-          },{
-            logo: '/static/logos/1.jpg',
-            name: '微信'
-          },{
-            logo: '/static/logos/1.jpg',
-            name: '微信'
-          },
-        ]
+        request(`${url_shop_list}&flag=known`)
+        .then(res => {
+          const {status, mes} = res.data
+
+          if(status == 200){
+            const {shopsList} = mes
+
+            this.shops = shopsList.map(({logo, shop_name, id}) => ({
+              id,
+              logo,
+              name: shop_name,
+            }))
+          }
+        })
+        .catch(err => {
+          
+        })
       },
       // 获取活动
       getEvents(){
-        const self = this
+        request(url_article_list)
+        .then(res => {
+          const {status, mes} = res.data
 
-        wx.request({
-          url: 'https://yunhe5.horsevision.cn/miniprogram/web/index.php?r=api/article/article-list',
-          success(res){
-            const {status, mes} = res.data
+          if(status == 200){
+            const {articleList, pageInfo} = mes
 
-            if(status == 200){
-              const {articleList, pageInfo} = mes
-
-              self.events = articleList.map(({title, add_time}) => ({
-                imgUrl: '/static/test/1.jpg',
-                title,
-                updatetime: formatTime(add_time, '-'),
-              }))
-            }
-          },
+            this.events = articleList.map(({title, add_time, article_id, thumb}) => ({
+              id: article_id,
+              imgUrl: thumb,
+              title,
+              updatetime: formatTime(add_time, '-'),
+            }))
+          }
         })
+        .catch(err => {
+          
+        })
+      },
+      // 加载更多
+      loadMore(){
+        console.log(1)
       },
     },
   }

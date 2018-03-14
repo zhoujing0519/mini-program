@@ -6,5 +6,13 @@ export const baseMixin = {
         url: `/pages/${path}/${path}?id=${id}`
       })
     },
+    showLoading(title = '加载中...'){
+      wx.showLoading({
+        title,
+      })
+    },
+    hideLoading(){
+      wx.hideLoading()
+    },
   },
 }

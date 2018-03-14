@@ -2,36 +2,51 @@
   <div class="page map">
     <!-- 导航栏 -->
     <div class="nav-wrap">
-      <a class="search" href="/pages/search/search">
+      <!-- <a class="search" href="/pages/search/search">
         <image src="/static/icons/icon-search.png"/>
-      </a>
-      <scroll-view class="nav-list" scroll-x>
+      </a> -->
+      <scroll-view 
+        class="nav-list" 
+        scroll-x
+        :scroll-with-animation="true"
+        :scroll-into-view="categoryId">
         <view class="item" 
-          v-for="(item, index) in navs" 
-          :key="index" 
-          :class="{active: index === 0}">
-          <span class="text">{{item}}</span>
+          v-for="(item, index) in categories" 
+          :key="index"
+          :id="item.categoryId"
+          @click="changeCategory(item)"
+          :class="{active: item.id === currentCategory}">
+          <span class="text">{{item.name}}</span>
         </view>
       </scroll-view>
     </div>
     <!-- 地图 -->
     <div id="map-wrap" class="map-wrap">
       <map style="width: 100%; height: 100%;"
-        :markers="markers"
-        :longitude="119.936998"
-        :latitude="31.788740"
+        :markers="shops"
+        :include-points="shops"
+        @markertap="selectMarker"
         :scale="18"></map>
     </div>
     <!-- 商户 -->
     <div class="shop-wrap">
-      <div class="total" @click="transform">
+      <div class="total">
         <span>共有{{total}}个商户</span>
-        <image src="/static/icons/icon-down.png"/>
+        <!-- <image src="/static/icons/icon-down.png"/> -->
       </div>
-      <scroll-view class="shop-list" scroll-x>
-        <view class="shop" v-for="(shop, index) in shops" :key="index" @click="linkTo('shop', index)">
-          <image :src="shop.imgUrl" />
-          <h2 class="name">{{shop.name}}</h2>
+      <scroll-view 
+        class="shop-list" 
+        scroll-x
+        :scroll-with-animation="true"
+        :scroll-into-view="markerId">
+        <view class="shop" 
+          v-for="(shop, index) in shops" 
+          :key="index"
+          :id="shop.id"
+          :class="{active: shop.id === markerId}"
+          @click="linkTo('shop', shop.shopId)">
+          <image :src="shop.imgUrl" mode="scaleToFill" />
+          <h2 class="name">{{shop.title}}</h2>
         </view>
       </scroll-view>
     </div>
@@ -39,17 +54,21 @@
 </template>
 
 <script>
-  import Gap from '@/components/gap'
   import {baseMixin} from '@/common/js/mixin'
+  import {marker} from '@/common/js/config'
+  import {shops} from './shops'
+  import {url_shop_category, url_shop_list} from '@/api/urls'
+  import {request} from '@/api/request'
 
   export default {
     mixins: [baseMixin],
     data(){
       return {
-        navs: [],
+        categories: [],
+        currentCategory: '',
         shops: [],
-        isFullscreen: false,
-        markers: [],
+        markerId: '',
+        categoryId: '',
       }
     },
     computed: {
@@ -57,100 +76,74 @@
         return this.shops.length
       },
     },
-    created(){
-      this.getNavs()
-      this.getShops()
-      this.getMarkers()
+    onLoad(){
+      this.getCategories()
     },
     methods: {
       // 获取导航信息
-      getNavs(){
-        this.navs = [
-          '文化艺术',
-          '游乐游艺',
-          '休闲小吃',
-          '私人影院',
-        ]
+      getCategories(){
+        this.showLoading()
+        request(url_shop_category)
+        .then(res => {
+          const {status, mes} = res.data
+          
+          if(status == 200){
+            const {categoryList} = mes
+
+            this.categories = categoryList.map(({cat_id, cat_name}) => ({
+              id: cat_id,
+              name: cat_name,
+              categoryId: `category-${cat_id}`,
+            }))
+            if(!this.currentCategory){
+              this.currentCategory = this.categories[0].id
+              this.categoryId = this.categories[0].categoryId
+            }
+            return Promise.resolve(this.currentCategory)
+          }
+        })
+        .then(categoryId => {
+          this.getShops(categoryId)
+        })
+        .catch(err => {
+
+        })
+      },
+      // 切换分类
+      changeCategory(category){
+        this.currentCategory = category.id
+        this.categoryId = category.categoryId
+        this.showLoading()
+        this.getShops(this.currentCategory)
       },
       // 获取当前商户列表
-      getShops(){
-        this.shops = [
-          {
-            imgUrl: '/static/test/1.jpg',
-            name: '米店百人咖啡'
-          },{
-            imgUrl: '/static/test/1.jpg',
-            name: '米店百人咖啡'
-          },{
-            imgUrl: '/static/test/1.jpg',
-            name: '米店百人咖啡'
-          },{
-            imgUrl: '/static/test/1.jpg',
-            name: '米店百人咖啡'
-          },
-        ]
+      getShops(categoryId){
+        request(`${url_shop_list}&catid=${categoryId}`)
+        .then(res => {
+          const {status, mes} = res.data
+
+          if(status == 200){
+            const {shopsList} = mes
+
+            this.shops = shopsList.map(shop => {
+              const {id, shop_name, preview} = shop
+              shop.shopId = id
+              shop.id = `shop-${id}`
+              shop.imgUrl = preview
+              shop.title = shop_name
+
+              return Object.assign({}, shop, marker)
+            })
+            this.hideLoading()
+          }
+        })
       },
-      // 获取坐标点集合
-      getMarkers(){
-        this.markers = [
-          {
-            title: '尚婚',
-            latitude: 31.787313,
-            longitude: 119.935679,
-            iconPath: '/static/icons/icon-pos-3.png',
-            width: 24,
-            height: 24,
-          },{
-            title: '空白格',
-            latitude: 31.787308,
-            longitude: 119.935684,
-            iconPath: '/static/icons/icon-pos-3.png',
-            width: 24,
-            height: 24,
-          },{
-            title: '集合',
-            latitude: 31.788426,
-            longitude: 119.936339,
-            iconPath: '/static/icons/icon-pos-3.png',
-            width: 24,
-            height: 24,
-          },{
-            title: '锅炉房',
-            latitude: 31.788658,
-            longitude: 119.936344,
-            iconPath: '/static/icons/icon-pos-3.png',
-            width: 24,
-            height: 24,
-          },{
-            title: '园区所要资料-第壹章节',
-            latitude: 31.788740,
-            longitude: 119.936998,
-            iconPath: '/static/icons/icon-pos-3.png',
-            width: 24,
-            height: 24,
-          },{
-            title: '正誉会',
-            latitude: 31.789091,
-            longitude: 119.937363,
-            iconPath: '/static/icons/icon-pos-3.png',
-            width: 24,
-            height: 24,
-          },{
-            title: '恒源畅书坊',
-            latitude: 31.788877,
-            longitude: 119.937642,
-            iconPath: '/static/icons/icon-pos-3.png',
-            width: 24,
-            height: 24,
-          },
-        ]
+      // 选择标记点
+      selectMarker(map){
+        const {mp} = map
+        const {markerId} = mp
+        this.markerId = markerId
       },
-      transform(){
-        this.isFullscreen = !this.isFullscreen
-      },
-    },
-    components: {
-      Gap,
     },
   }
 </script>

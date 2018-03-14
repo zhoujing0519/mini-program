@@ -1,4 +1,5 @@
 @import '../../common/stylus/var.styl'
+@import '../../common/stylus/extend.styl'
 
 .title
   font-size: $font-l
@@ -6,6 +7,9 @@
   line-height: 40px
 
 .special
+  display: flex
+  flex-direction: column
+  height: 100%
   .shop-wrap
     padding-left: 10px
     border-bottom: 1px solid $color-border
@@ -31,12 +35,21 @@
           border-radius: 50%
         .name
           display: block
+          width: 60px
           text-align: center
           font-size: $font-s
           margin-top: 1em
+          @extend .ellipsis
   .event-wrap
+    display: flex
+    flex-direction: column
+    flex: 1
     padding-left: 15px
+    .title
+      flex: 0 0 40px
     .event-list
+      flex: 1
+      overflow: hidden
       .event
         display: flex
         padding: 10px 15px 10px 0

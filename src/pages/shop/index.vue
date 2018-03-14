@@ -2,31 +2,29 @@
   <div class="page shop">
     <!-- 轮播图 -->
     <swiper :indicator-dots="true" indicator-color="#000" indicator-active-color="#fff">
-      <swiper-item v-for="(swiper, index) in imgUrls" :key="index">
+      <swiper-item v-for="(swiper, index) in shop.albums" :key="index">
         <image :src="swiper" />
       </swiper-item>
     </swiper>
     <!-- 商家介绍 -->
     <div class="shop-wrap">
-      <h1 class="shop-name">米店百人咖啡</h1>
+      <h1 class="shop-name">{{shop.shop_name}}</h1>
       <ul class="contact-list">
         <li class="item" @click="makePhoneCall">
           <image class="icon" src="/static/icons/icon-tel.png" />
-          <span class="desc">86499890</span>
+          <span class="desc">{{shop.shop_tel}}</span>
           <image class="icon" src="/static/icons/icon-arr.png" />
         </li>
         <li class="item" @click="openLocation">
           <image class="icon" src="/static/icons/icon-pos.png" />
-          <span class="desc">三堡街141号创意街区21号</span>
+          <span class="desc">{{shop.shop_add}}</span>
           <image class="icon" src="/static/icons/icon-arr.png" />
         </li>
       </ul>
       <div class="shop-intro">
         <h2 class="title">商户介绍</h2>
         <div class="desc">
-          曾经的这里原是常州第五毛纺织的医务室。一楼为医疗区，
-          为本厂职工和职工直系家属进行一般疾病的诊断，二楼配有
-          病床，供本厂职工住院治疗和疗养。
+          <rich-text :nodes="shop.introduce"></rich-text>
         </div>
       </div>
     </div>
@@ -47,86 +45,105 @@
         </li>
       </ul>
     </div>
-    <div class="more">查看更多</div>
-    <gap></gap>
+    <!-- <div class="more">查看更多</div> -->
+    <!-- <gap></gap> -->
     <!-- 留言 -->
-    <div class="leave-msg">
+    <!-- <div class="leave-msg">
       <image src="/static/icons/icon-edt.png"/>
       <span class="text">写下你对这里的看法</span>
-    </div>
+    </div> -->
   </div>
 </template>
 
 <script>
   import banner from '@/components/banner'
   import gap from '@/components/gap'
+  import {url_shop_detail, url_shop_comment_list} from '@/api/urls'
+  import {request} from '@/api/request'
 
   export default {
     data(){
       return {
-        shop: {
-          phoneNumber: '88251173'
-        },
-        imgUrls: [],
+        shop: {},
         msgs: [],
       }
     },
     onLoad(){
-      console.log(this.$root.$mp.query)
-      wx.showLoading({
-        title: '加载中...'
-      })
-    },
-    onReady(){
-      setTimeout(() => {
-        wx.hideLoading()
-      }, 500)
-    },
-    created(){
-      this.getBanner()
-      this.getMsg()
+      const {id} = this.$root.$mp.query
+      this.getDetail(id)
     },
     methods: {
-      getBanner(){
-        this.imgUrls = [
-          '/static/banner/1.jpg',
-          '/static/banner/1.jpg',
-          '/static/banner/1.jpg',
-          '/static/banner/1.jpg',
-          '/static/banner/1.jpg',
-        ]
+      // 获取详情数据
+      getDetail(id){
+        wx.showLoading({
+          title: '加载中...'
+        })
+        request(`${url_shop_detail}&id=${id}`)
+        .then(res => {
+          const {status, mes} = res.data
+
+          if(status == 200){
+            const {shop} = mes
+
+            this.shop = shop
+            return Promise.resolve()
+          }
+        })
+        .then(() => {
+          this.getComment(id)
+        })
       },
-      getMsg(){
-        this.msgs = [
-          {
-            avatar: '/static/avatar/1.jpg',
-            username: '凌乱的卷毛怪',
-            updatetime: '2018-02-02',
-            msg: '还是很不错的。'
-          },{
-            avatar: '/static/avatar/1.jpg',
-            username: '凌乱的卷毛怪',
-            updatetime: '2018-02-02',
-            msg: '还是很不错的。'
-          },{
-            avatar: '/static/avatar/1.jpg',
-            username: '凌乱的卷毛怪',
-            updatetime: '2018-02-02',
-            msg: '还是很不错的。'
-          },
-        ]
+      // 获取评论数据
+      getComment(id){
+        request(`${url_shop_comment_list}&shopid=${id}`)
+        .then(res => {
+          const {status, mes} = res.data
+
+          if(status == 200){
+            const {commentList} = mes
+
+            this.msgs = commentList.map(({wechat_headimgurl, wechat_nickname, add_time, content}) => ({
+              avatar: wechat_headimgurl || '/static/avatar/male.png',
+              username: wechat_nickname || '匿名用户',
+              msg: content,
+              updatetime: add_time,
+            }))
+            setTimeout(() => {
+              wx.hideLoading()
+            }, 500)
+          }
+        })
+        .catch(err => {
+
+        })
       },
       // 拨打电话
       makePhoneCall(){
+        if(!this.shop.shop_tel) return
+        let phoneNumber = this.shop.shop_tel.split('/')[0]
+
         wx.makePhoneCall({
-          phoneNumber: this.shop.phoneNumber
+          phoneNumber,
         })
       },
       // 获取商家位置
       openLocation(){
         wx.openLocation({
-          latitude: 12,
-          longitude: 12,
+          latitude: +this.shop.latitude,
+          longitude: +this.shop.longitude,
+        })
+      },
+      // 获取用户信息
+      getUserInfo(){
+        // 调用登录接口
+        wx.login({
+          success: () => {
+            wx.getUserInfo({
+              success: (res) => {
+                this.userInfo = res.userInfo
+              }
+            })
+          }
         })
       },
     },
