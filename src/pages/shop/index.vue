@@ -67,7 +67,6 @@
   import gap from '@/components/gap'
   import {formatTime} from '@/common/js/format'
   import {url_shop_detail, url_shop_comment_list, url_shop_add_comment} from '@/api/urls'
-  import {request} from '@/api/request'
 
   export default {
     data(){
@@ -89,7 +88,7 @@
         wx.showLoading({
           title: '加载中...'
         })
-        request(`${url_shop_detail}&id=${id}`)
+        this.$request.get(`${url_shop_detail}&id=${id}`)
         .then(res => {
           const {status, mes} = res.data
 
@@ -106,7 +105,7 @@
       },
       // 获取评论数据
       getComment(id){
-        request(`${url_shop_comment_list}&shopid=${id}`)
+        this.$request.get(`${url_shop_comment_list}&shopid=${id}`)
         .then(res => {
           const {status, mes} = res.data
 
@@ -173,11 +172,14 @@
         const {avatarUrl, nickName} = this.userInfo
         const {id} = this.$root.$mp.query
 
-        request(url_shop_add_comment, 'POST', {
-          shop_id: id,
-          wechat_headimgurl: avatarUrl,
-          wechat_nickname: nickName,
-          content: commentContent,
+        this.$request.post({
+          url: url_shop_add_comment, 
+          data: {
+            shop_id: id,
+            wechat_headimgurl: avatarUrl,
+            wechat_nickname: nickName,
+            content: commentContent,
+          }
         })
         .then(res => {
           const {status, mes} = res.data

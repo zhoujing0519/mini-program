@@ -39,7 +39,6 @@
   import {baseMixin} from '@/common/js/mixin'
   import {formatTime} from '@/common/js/format'
   import {url_article_list, url_shop_list} from '@/api/urls'
-  import {request} from '@/api/request'
 
   export default {
     mixins: [baseMixin],
@@ -47,6 +46,8 @@
       return {
         shops: [],
         events: [],
+        currentPage: 1,
+        totalPage: 1,
       }
     },
     onLoad(){
@@ -60,7 +61,7 @@
       },
       // 获取商户
       getShops(){
-        request(`${url_shop_list}&flag=known`)
+        this.$request.get(`${url_shop_list}&flag=known`)
         .then(res => {
           const {status, mes} = res.data
 
@@ -80,13 +81,16 @@
       },
       // 获取活动
       getEvents(){
-        request(`${url_article_list}&catid=2`)
+        this.$request.get(`${url_article_list}&catid=2`)
         .then(res => {
           const {status, mes} = res.data
 
           if(status == 200){
             const {articleList, pageInfo} = mes
+            const {currPage, totalPage} = pageInfo
 
+            this.currentPage = +currPage
+            this.totalPage = +totalPage
             this.events = articleList.map(({title, add_time, article_id, thumb}) => ({
               id: article_id,
               imgUrl: thumb,
@@ -101,7 +105,33 @@
       },
       // 加载更多
       loadMore(){
-        console.log(1)
+        this.currentPage++
+        if(this.currentPage > this.totalPage) return
+
+        this.showLoading()
+        this.$request.get(`${url_article_list}&catid=2&page=${this.currentPage}`)
+        .then(res => {
+          const {status, mes} = res.data
+
+          if(status == 200){
+            const {articleList, pageInfo} = mes
+
+            this.currentPage = +pageInfo.currPage
+            let newArticles = articleList.map(({title, add_time, article_id, thumb}) => ({
+              id: article_id,
+              imgUrl: thumb,
+              title,
+              updatetime: formatTime(add_time, '-'),
+            }))
+            setTimeout(() => {
+              this.events.push(...newArticles)
+              this.hideLoading()
+            }, 1000)
+          }
+        })
+        .catch(err => {
+
+        })
       },
     },
   }

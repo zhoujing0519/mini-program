@@ -1,6 +1,9 @@
 import Vue from 'vue'
 import App from './App'
 import 'common/stylus/app.styl'
+import {request} from '@/api/request'
+
+Vue.prototype.$request = request
 
 Vue.config.productionTip = false
 App.mpType = 'app'

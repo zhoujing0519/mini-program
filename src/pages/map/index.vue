@@ -58,7 +58,6 @@
   import {marker} from '@/common/js/config'
   import {shops} from './shops'
   import {url_shop_category, url_shop_list} from '@/api/urls'
-  import {request} from '@/api/request'
 
   export default {
     mixins: [baseMixin],
@@ -83,7 +82,7 @@
       // 获取导航信息
       getCategories(){
         this.showLoading()
-        request(url_shop_category)
+        this.$request.get(url_shop_category)
         .then(res => {
           const {status, mes} = res.data
           
@@ -120,7 +119,7 @@
       getShops(categoryId){
         this.markerId = null // 清空上次标记点ID
 
-        request(`${url_shop_list}&catid=${categoryId}`)
+        this.$request.get(`${url_shop_list}&catid=${categoryId}`)
         .then(res => {
           const {status, mes} = res.data
 

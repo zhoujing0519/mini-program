@@ -10,7 +10,6 @@
 
 <script>
   import {url_article_detail} from '@/api/urls'
-  import {request} from '@/api/request'
   import {formatTime} from '@/common/js/format'
 
   export default {
@@ -26,7 +25,7 @@
     methods: {
       // 获取文章详情
       getArticleDetail(id){
-        request(`${url_article_detail}&id=${id}`)
+        this.$request.get(`${url_article_detail}&id=${id}`)
         .then(res => {
           const {status, mes} = res.data
 

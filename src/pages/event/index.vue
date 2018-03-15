@@ -14,14 +14,14 @@
       scroll-y
       @scrolltolower="loadMore">
       <view class="item" 
-        v-for="(shop, index) in shops" 
+        v-for="(item, index) in currentList" 
         :key="index" 
-        @click="linkTo('shop', shop.id)">
-        <image :src="shop.imgUrl" mode="aspectFill" />
+        @click="navigateTo(item.id)">
+        <image :src="item.imgUrl" mode="aspectFill" />
         <div class="content">
-          <h2 class="title">{{shop.title}}</h2>
+          <h2 class="title">{{item.title}}</h2>
           <div class="desc">
-            <rich-text :nodes="shop.desc"></rich-text>
+            <rich-text :nodes="item.desc"></rich-text>
           </div>
           <div class="btn">查看详情</div>
         </div>
@@ -33,39 +33,51 @@
 <script>
   import {baseMixin} from '@/common/js/mixin'
   import {url_shop_list, url_article_list} from '@/api/urls'
-  import {request} from '@/api/request'
 
   export default {
     mixins: [baseMixin],
     data(){
       return {
         type: 0,
-        list: {},
         shops: [],
-        currentPage: 1,
-        totalPage: '',
+        shopPage: 1,
+        shopTotalPage: 1,
+        articles: [],
+        articlePage: 1,
+        articleTotalPage: 1,
       }
     },
     computed: {
+      // 当前列表
       currentList(){
-        return this.list[this.type]
+        return this.type === 0 ? this.shops : this.articles
+      },
+      // 当前页码
+      currentPage(){
+        return this.type === 0 ? this.shopPage : this.articlePage
+      },
+      // 当前页码总数
+      currentTotalPage(){
+        return this.type === 0 ? this.shopTotalPage : this.articleTotalPage
       },
     },
     onLoad(){
-      this.getList()
+      this.getShops()
+      this.getArticles()
     },
     methods: {
+      // 选择分类
       select(index){
         this.type = index
       },
-      // 获取列表
-      getList(){
-        let method = this.type === 0 ? 'getShops' : 'getArticle'
-        this[method]()
+      // 跳转到详情页
+      navigateTo(id){
+        let pathName = this.type === 0 ? 'shop' : 'detail'
+        this.linkTo(pathName, id)
       },
       // 获取商家列表
       getShops(){
-        request(url_shop_list)
+        this.$request.get(url_shop_list)
         .then(res => {
           const {status, mes} = res.data
 
@@ -73,8 +85,8 @@
             const {shopsList, pageInfo} = mes
             const {currPage, totalPage} = pageInfo
 
-            this.currentPage = +currPage
-            this.totalPage = +totalPage
+            this.shopPage = +currPage
+            this.shopTotalPage = +totalPage
             this.shops = shopsList.map(({id, preview, shop_name, introduce}) => ({
               id,
               imgUrl: preview,
@@ -89,21 +101,21 @@
       },
       // 获取文章列表
       getArticles(){
-        request(`${url_article_list}&catid=1`)
+        this.$request.get(`${url_article_list}&catid=1`)
         .then(res => {
           const {status, mes} = res.data
 
           if(status == 200){
-            const {shopsList, pageInfo} = mes
+            const {articleList, pageInfo} = mes
             const {currPage, totalPage} = pageInfo
 
-            this.currentPage = +currPage
-            this.totalPage = +totalPage
-            this.shops = shopsList.map(({id, preview, shop_name, introduce}) => ({
-              id,
-              imgUrl: preview,
-              title: shop_name,
-              desc: introduce,
+            this.articlePage = +currPage
+            this.articleTotalPage = +totalPage
+            this.articles = articleList.map(({article_id, thumb, title, description}) => ({
+              id: article_id,
+              imgUrl: thumb,
+              title,
+              desc: description,
             }))
           }
         })
@@ -113,18 +125,23 @@
       },
       // 上拉加载更多
       loadMore(){
-        this.currentPage++
-        if(this.currentPage > this.totalPage) return
+        let method = this.type === 0 ? 'shop' : 'article'
+        this[`${method}LoadMore`]()
+      },
+      // 商家上拉加载
+      shopLoadMore(){
+        this.shopPage++
+        if(this.currentPage > this.currentTotalPage) return
 
         this.showLoading()
-        request(`${url_shop_list}&page=${this.currentPage}`)
+        this.$request.get(`${url_shop_list}&page=${this.currentPage}`)
         .then(res => {
           const {status, mes} = res.data
 
           if(status == 200){
             const {shopsList, pageInfo} = mes
 
-            this.currentPage = +pageInfo.currPage
+            this.shopPage = +pageInfo.currPage
             let newShops = shopsList.map(({id, preview, shop_name, introduce}) => ({
               id,
               imgUrl: preview,
@@ -133,6 +150,36 @@
             }))
             setTimeout(() => {
               this.shops.push(...newShops)
+              this.hideLoading()
+            }, 1000)
+          }
+        })
+        .catch(err => {
+
+        })
+      },
+      // 文章上拉加载
+      articleLoadMore(){
+        this.articlePage++
+        if(this.currentPage > this.currentTotalPage) return
+
+        this.showLoading()
+        this.$request.get(`${url_article_list}&catid=1&page=${this.currentPage}`)
+        .then(res => {
+          const {status, mes} = res.data
+
+          if(status == 200){
+            const {articleList, pageInfo} = mes
+
+            this.articlePage = +pageInfo.currPage
+            let newArticles = articleList.map(({article_id, thumb, title, description}) => ({
+              id: article_id,
+              imgUrl: thumb,
+              title,
+              desc: description,
+            }))
+            setTimeout(() => {
+              this.articles.push(...newArticles)
               this.hideLoading()
             }, 1000)
           }
