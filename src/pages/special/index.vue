@@ -80,7 +80,7 @@
       },
       // 获取活动
       getEvents(){
-        request(url_article_list)
+        request(`${url_article_list}&catid=2`)
         .then(res => {
           const {status, mes} = res.data
 

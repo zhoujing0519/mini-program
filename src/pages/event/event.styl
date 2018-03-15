@@ -1,7 +1,12 @@
 @import '../../common/stylus/var.styl'
+@import '../../common/stylus/extend.styl'
 
 .event
+  display: flex
+  flex-direction: column
+  height: 100%
   .nav
+    flex: 0 0 36px
     font-size: 0
     border-bottom: 1px solid $color-border
     .item
@@ -27,7 +32,10 @@
           height: 2px
           background: currentColor
   .event-list
+    flex: 1
+    overflow: hidden
     padding-left: 15px
+    box-sizing: border-box
     .item
       display: flex
       align-items: center
@@ -41,9 +49,11 @@
         flex: 1
         padding-left: 10px
         text-align: right
+        box-sizing: border-box
         .title, .desc
           text-align: left
         .title
+          width: 100%
           font-size: $font-l
           color: $color-text-d
           margin-bottom: .4em

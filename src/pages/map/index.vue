@@ -26,7 +26,7 @@
         :markers="shops"
         :include-points="shops"
         @markertap="selectMarker"
-        :scale="18"></map>
+        :scale="30"></map>
     </div>
     <!-- 商户 -->
     <div class="shop-wrap">
@@ -118,6 +118,8 @@
       },
       // 获取当前商户列表
       getShops(categoryId){
+        this.markerId = null // 清空上次标记点ID
+
         request(`${url_shop_list}&catid=${categoryId}`)
         .then(res => {
           const {status, mes} = res.data
@@ -142,6 +144,16 @@
       selectMarker(map){
         const {mp} = map
         const {markerId} = mp
+
+        // 遍历商家
+        // 商家ID === 标记点ID || 上次的标记点ID === 商家ID
+        // 切换标记图标
+        for(let [index, {id}] of this.shops.entries()){
+          if(id === markerId || (this.markerId && id === this.markerId)){
+            this.shops[index].iconPathToggle()
+          }
+        }
+        // 将本次标记ID记录下来
         this.markerId = markerId
       },
     },

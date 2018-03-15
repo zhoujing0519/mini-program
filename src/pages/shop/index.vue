@@ -3,7 +3,7 @@
     <!-- 轮播图 -->
     <swiper :indicator-dots="true" indicator-color="#000" indicator-active-color="#fff">
       <swiper-item v-for="(swiper, index) in shop.albums" :key="index">
-        <image :src="swiper" />
+        <image mode="aspectFill" :src="swiper" />
       </swiper-item>
     </swiper>
     <!-- 商家介绍 -->
@@ -12,12 +12,12 @@
       <ul class="contact-list">
         <li class="item" @click="makePhoneCall">
           <image class="icon" src="/static/icons/icon-tel.png" />
-          <span class="desc">{{shop.shop_tel}}</span>
+          <span class="desc">{{shop.shop_tel || '暂无电话'}}</span>
           <image class="icon" src="/static/icons/icon-arr.png" />
         </li>
         <li class="item" @click="openLocation">
           <image class="icon" src="/static/icons/icon-pos.png" />
-          <span class="desc">{{shop.shop_add}}</span>
+          <span class="desc">{{shop.shop_add || '默认地址'}}</span>
           <image class="icon" src="/static/icons/icon-arr.png" />
         </li>
       </ul>
@@ -32,7 +32,7 @@
     <!-- 精选留言 -->
     <div class="shop-msg">
       <h2 class="title">精选留言</h2>
-      <ul class="msg-list">
+      <ul class="msg-list" v-if="msgs.length > 0">
         <li class="item" v-for="(item, index) in msgs" :key="index">
           <image :src="item.avatar" />
           <div class="content">
@@ -44,21 +44,29 @@
           </div>
         </li>
       </ul>
+      <div class="empty" v-else>
+        暂无评论
+      </div>
     </div>
-    <!-- <div class="more">查看更多</div> -->
-    <!-- <gap></gap> -->
+    <div class="more" v-if="msgs.length > 0">查看更多</div>
+    <gap></gap>
     <!-- 留言 -->
-    <!-- <div class="leave-msg">
+    <div class="leave-msg">
       <image src="/static/icons/icon-edt.png"/>
-      <span class="text">写下你对这里的看法</span>
-    </div> -->
+      <input 
+        class="text" 
+        placeholder="写下你对这里的看法"
+        v-model="commentContent"
+        @confirm="comment" />
+    </div>
   </div>
 </template>
 
 <script>
   import banner from '@/components/banner'
   import gap from '@/components/gap'
-  import {url_shop_detail, url_shop_comment_list} from '@/api/urls'
+  import {formatTime} from '@/common/js/format'
+  import {url_shop_detail, url_shop_comment_list, url_shop_add_comment} from '@/api/urls'
   import {request} from '@/api/request'
 
   export default {
@@ -66,11 +74,14 @@
       return {
         shop: {},
         msgs: [],
+        userInfo: {},
+        commentContent: '',
       }
     },
     onLoad(){
       const {id} = this.$root.$mp.query
       this.getDetail(id)
+      this.getUserInfo()
     },
     methods: {
       // 获取详情数据
@@ -131,6 +142,7 @@
         wx.openLocation({
           latitude: +this.shop.latitude,
           longitude: +this.shop.longitude,
+          scale: 40,
         })
       },
       // 获取用户信息
@@ -144,6 +156,48 @@
               }
             })
           }
+        })
+      },
+      // 发布评论
+      comment(){
+        const {commentContent} = this
+        if(!commentContent){
+          wx.showModal({
+            title: '系统信息',
+            content: '评论内容不能为空',
+            showCancel: false,
+          })
+          return
+        }
+
+        const {avatarUrl, nickName} = this.userInfo
+        const {id} = this.$root.$mp.query
+
+        request(url_shop_add_comment, 'POST', {
+          shop_id: id,
+          wechat_headimgurl: avatarUrl,
+          wechat_nickname: nickName,
+          content: commentContent,
+        })
+        .then(res => {
+          const {status, mes} = res.data
+
+          if(status == 200){
+            this.msgs.unshift({
+              avatar: avatarUrl,
+              username: nickName,
+              msg: commentContent,
+              updatetime: formatTime(new Date() / 1000, '-'),
+            })
+            wx.showToast({
+              title: '成功',
+              icon: 'success',
+              duration: 2000
+            })
+          }
+        })
+        .catch(err => {
+
         })
       },
     },
