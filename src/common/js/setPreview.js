@@ -1,0 +1,1 @@
+export const setPreview = url => url || '/static/test/1.jpg'

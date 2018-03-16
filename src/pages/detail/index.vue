@@ -11,8 +11,10 @@
 <script>
   import {url_article_detail} from '@/api/urls'
   import {formatTime} from '@/common/js/format'
+  import {baseMixin} from '@/common/js/mixin'
 
   export default {
+    mixins: [baseMixin],
     data(){
       return {
         article: {},
@@ -20,6 +22,10 @@
     },
     onLoad(){
       const {id} = this.$root.$mp.query
+      if(!id){
+        this.linkTo('index')
+        return
+      }
       this.getArticleDetail(id)
     },
     methods: {

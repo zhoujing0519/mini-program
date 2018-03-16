@@ -63,7 +63,6 @@
 </template>
 
 <script>
-  import banner from '@/components/banner'
   import gap from '@/components/gap'
   import {formatTime} from '@/common/js/format'
   import {url_shop_detail, url_shop_comment_list, url_shop_add_comment} from '@/api/urls'
@@ -204,7 +203,6 @@
       },
     },
     components: {
-      banner,
       gap,
     },
   }

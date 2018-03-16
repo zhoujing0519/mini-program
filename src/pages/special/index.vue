@@ -39,6 +39,7 @@
   import {baseMixin} from '@/common/js/mixin'
   import {formatTime} from '@/common/js/format'
   import {url_article_list, url_shop_list} from '@/api/urls'
+  import {setPreview} from '@/common/js/setPreview'
 
   export default {
     mixins: [baseMixin],
@@ -93,7 +94,7 @@
             this.totalPage = +totalPage
             this.events = articleList.map(({title, add_time, article_id, thumb}) => ({
               id: article_id,
-              imgUrl: thumb,
+              imgUrl: setPreview(thumb),
               title,
               updatetime: formatTime(add_time, '-'),
             }))
@@ -119,7 +120,7 @@
             this.currentPage = +pageInfo.currPage
             let newArticles = articleList.map(({title, add_time, article_id, thumb}) => ({
               id: article_id,
-              imgUrl: thumb,
+              imgUrl: setPreview(thumb),
               title,
               updatetime: formatTime(add_time, '-'),
             }))

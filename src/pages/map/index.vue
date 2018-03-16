@@ -58,6 +58,7 @@
   import {marker} from '@/common/js/config'
   import {shops} from './shops'
   import {url_shop_category, url_shop_list} from '@/api/urls'
+  import {setPreview} from '@/common/js/setPreview'
 
   export default {
     mixins: [baseMixin],
@@ -130,7 +131,7 @@
               const {id, shop_name, preview} = shop
               shop.shopId = id
               shop.id = `shop-${id}`
-              shop.imgUrl = preview
+              shop.imgUrl = setPreview(preview)
               shop.title = shop_name
 
               return Object.assign({}, shop, marker)

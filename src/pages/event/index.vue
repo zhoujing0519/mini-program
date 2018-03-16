@@ -33,6 +33,7 @@
 <script>
   import {baseMixin} from '@/common/js/mixin'
   import {url_shop_list, url_article_list} from '@/api/urls'
+  import {setPreview} from '@/common/js/setPreview'
 
   export default {
     mixins: [baseMixin],
@@ -89,7 +90,7 @@
             this.shopTotalPage = +totalPage
             this.shops = shopsList.map(({id, preview, shop_name, introduce}) => ({
               id,
-              imgUrl: preview,
+              imgUrl: setPreview(preview),
               title: shop_name,
               desc: introduce,
             }))
@@ -113,7 +114,7 @@
             this.articleTotalPage = +totalPage
             this.articles = articleList.map(({article_id, thumb, title, description}) => ({
               id: article_id,
-              imgUrl: thumb,
+              imgUrl: setPreview(thumb),
               title,
               desc: description,
             }))
