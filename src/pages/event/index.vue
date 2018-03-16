@@ -145,7 +145,7 @@
             this.shopPage = +pageInfo.currPage
             let newShops = shopsList.map(({id, preview, shop_name, introduce}) => ({
               id,
-              imgUrl: preview,
+              imgUrl: setPreview(preview),
               title: shop_name,
               desc: introduce,
             }))
@@ -175,7 +175,7 @@
             this.articlePage = +pageInfo.currPage
             let newArticles = articleList.map(({article_id, thumb, title, description}) => ({
               id: article_id,
-              imgUrl: thumb,
+              imgUrl: setPreview(thumb),
               title,
               desc: description,
             }))

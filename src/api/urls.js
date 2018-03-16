@@ -1,6 +1,8 @@
 const url_base = 'https://yunhe5.horsevision.cn/miniprogram/web/index.php?r=api'
 const connect = (modules, method) => `${url_base}/${modules}/${method}`
 
+// 首页
+export const url_sys_info = connect('sys', 'info')
 // 文章：列表
 export const url_article_list = connect('article', 'article-list')
 // 文章：详情
