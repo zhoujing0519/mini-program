@@ -32,8 +32,8 @@
     <!-- 精选留言 -->
     <div class="shop-msg">
       <h2 class="title">精选留言</h2>
-      <ul class="msg-list" v-if="msgs.length > 0">
-        <li class="item" v-for="(item, index) in msgs" :key="index">
+      <ul class="msg-list" v-if="comments.length > 0">
+        <li class="item" v-for="(item, index) in comments" :key="index">
           <image :src="item.avatar" />
           <div class="content">
             <div class="top">
@@ -48,7 +48,7 @@
         暂无评论
       </div>
     </div>
-    <div class="more" v-if="msgs.length > 0">查看更多</div>
+    <div class="more" v-if="comments.length > 0" @click="getCommentMore">查看更多</div>
     <gap></gap>
     <!-- 留言 -->
     <div class="leave-msg">
@@ -66,18 +66,23 @@
   import gap from '@/components/gap'
   import {formatTime} from '@/common/js/format'
   import {url_shop_detail, url_shop_comment_list, url_shop_add_comment} from '@/api/urls'
+  import {baseMixin} from '@/common/js/mixin'
 
   export default {
+    mixins: [baseMixin],
     data(){
       return {
         shop: {},
-        msgs: [],
+        comments: [],
+        currentPage: 1,
+        totalPage: 1,
         userInfo: {},
         commentContent: '',
       }
     },
     onLoad(){
       const {id} = this.$root.$mp.query
+      
       this.getDetail(id)
       this.getUserInfo()
     },
@@ -94,7 +99,7 @@
           if(status == 200){
             const {shop} = mes
 
-            this.shop = shop
+            this.shop = Object.assign({id}, shop)
             return Promise.resolve()
           }
         })
@@ -109,16 +114,52 @@
           const {status, mes} = res.data
 
           if(status == 200){
-            const {commentList} = mes
+            const {commentList, pageInfo} = mes
+            const {currPage, totalPage} = pageInfo
 
-            this.msgs = commentList.map(({wechat_headimgurl, wechat_nickname, add_time, content}) => ({
+            this.currentPage = currPage
+            this.totalPage = totalPage
+            this.comments = commentList.map(({wechat_headimgurl, wechat_nickname, add_time, content}) => ({
               avatar: wechat_headimgurl || '/static/avatar/male.png',
               username: wechat_nickname || '匿名用户',
               msg: content,
               updatetime: add_time,
             }))
             setTimeout(() => {
-              wx.hideLoading()
+              this.hideLoading()
+            }, 500)
+          }
+        })
+        .catch(err => {
+
+        })
+      },
+      // 加载更多评论
+      getCommentMore(){
+        let {shop, currentPage, totalPage} = this
+        let {id} = shop
+        currentPage++
+        if(currentPage > totalPage) return
+
+        this.showLoading()
+        this.$request.get(`${url_shop_comment_list}&shopid=${id}&page=${currentPage}`)
+        .then(res => {
+          const {status, mes} = res.data
+
+          if(status == 200){
+            const {commentList, pageInfo} = mes
+            const {currPage} = pageInfo
+
+            this.currentPage = currPage
+            let newComments = commentList.map(({wechat_headimgurl, wechat_nickname, add_time, content}) => ({
+              avatar: wechat_headimgurl || '/static/avatar/male.png',
+              username: wechat_nickname || '匿名用户',
+              msg: content,
+              updatetime: add_time,
+            }))
+            setTimeout(() => {
+              this.comments.push(...newComments)
+              this.hideLoading()
             }, 500)
           }
         })
@@ -184,7 +225,7 @@
           const {status, mes} = res.data
 
           if(status == 200){
-            this.msgs.unshift({
+            this.comments.unshift({
               avatar: avatarUrl,
               username: nickName,
               msg: commentContent,
