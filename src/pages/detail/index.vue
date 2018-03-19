@@ -17,7 +17,7 @@
     mixins: [baseMixin],
     data(){
       return {
-        article: {},
+        article: {}, // 文章信息
       }
     },
     onLoad(){

@@ -39,13 +39,13 @@
     mixins: [baseMixin],
     data(){
       return {
-        type: 0,
-        shops: [],
-        shopPage: 1,
-        shopTotalPage: 1,
-        articles: [],
-        articlePage: 1,
-        articleTotalPage: 1,
+        type: 0, // 当前列表类别
+        shops: [], // 商家
+        shopPage: 1, // 商家当前页
+        shopTotalPage: 1, // 商家总页数
+        articles: [], // 文章
+        articlePage: 1, // 文章当前页
+        articleTotalPage: 1, // 文章总页数
       }
     },
     computed: {

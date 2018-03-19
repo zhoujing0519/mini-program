@@ -29,8 +29,8 @@
   export default {
     data(){
       return {
-        hots: [],
-        searchList: [],
+        hots: [], // 热搜
+        searchList: [], // 搜索列表
       }
     },
     created(){

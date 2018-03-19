@@ -64,11 +64,11 @@
     mixins: [baseMixin],
     data(){
       return {
-        categories: [],
-        currentCategory: '',
-        shops: [],
-        markerId: '',
-        categoryId: '',
+        categories: [], // 分类
+        currentCategory: '', // 当前分类
+        shops: [], // 商家
+        markerId: '', // 用于标记的ID（不能使用纯数字的ID，格式化为shop-[id]这种格式）
+        categoryId: '', // 用于导航的ID（不能使用纯数字的ID，格式化为category-[id]这种格式）
       }
     },
     computed: {

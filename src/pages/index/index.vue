@@ -33,10 +33,10 @@
     data(){
       return {
         sys: {
-          banners: [],
-          nameCN: '',
-          nameEN: '',
-          introduce: '',
+          banners: [], // 轮播
+          nameCN: '', // 中文
+          nameEN: '', // 英文
+          introduce: '', // 介绍
         },
       }
     },
@@ -58,8 +58,6 @@
             this.sys.nameEN = sys_ename
             this.sys.introduce = introduce
           }
-
-          console.log(this.sys)
         })
       },
     },

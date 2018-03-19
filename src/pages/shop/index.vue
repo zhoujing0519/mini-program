@@ -72,12 +72,12 @@
     mixins: [baseMixin],
     data(){
       return {
-        shop: {},
-        comments: [],
-        currentPage: 1,
-        totalPage: 1,
-        userInfo: {},
-        commentContent: '',
+        shop: {}, // 商家信息
+        comments: [], // 评论列表
+        currentPage: 1, // 评论当前页
+        totalPage: 1, // 评论总页数
+        userInfo: {}, // 用户信息
+        commentContent: '', // 评论内容
       }
     },
     onLoad(){

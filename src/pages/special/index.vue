@@ -45,10 +45,10 @@
     mixins: [baseMixin],
     data(){
       return {
-        shops: [],
-        events: [],
-        currentPage: 1,
-        totalPage: 1,
+        shops: [], // 商家
+        events: [], // 活动
+        currentPage: 1, // 活动当前页
+        totalPage: 1, // 活动总页数
       }
     },
     onLoad(){
