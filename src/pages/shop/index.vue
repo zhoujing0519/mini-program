@@ -229,7 +229,7 @@
               avatar: avatarUrl,
               username: nickName,
               msg: commentContent,
-              updatetime: formatTime(new Date() / 1000, '-'),
+              updatetime: formatTime(+new Date, '-'),
             })
             wx.showToast({
               title: '成功',

@@ -17,3 +17,7 @@ export const url_shop_detail = connect('shops', 'shop-detail')
 export const url_shop_add_comment = connect('shops', 'add-comment')
 // 商家：评论列表
 export const url_shop_comment_list = connect('shops', 'comment-list')
+// 商家：搜索
+export const url_shop_search = connect('shops', 'search-shop-list')
+// 系统：热搜
+export const url_hot_search = connect('sys', 'hot-search')

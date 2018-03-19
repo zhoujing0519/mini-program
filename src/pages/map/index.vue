@@ -2,9 +2,9 @@
   <div class="page map">
     <!-- 导航栏 -->
     <div class="nav-wrap">
-      <!-- <a class="search" href="/pages/search/search">
+      <a class="search" href="/pages/search/search">
         <image src="/static/icons/icon-search.png"/>
-      </a> -->
+      </a>
       <scroll-view 
         class="nav-list" 
         scroll-x
