@@ -2,16 +2,25 @@
   <div class="page index">
     <div class="banner-wrap">
       <!-- 轮播图 -->
-      <swiper :indicator-dots="true" indicator-color="#000" indicator-active-color="#fff">
+      <swiper :indicator-dots="true" indicator-color="#000" indicator-active-color="#fff" :autoplay="true">
         <swiper-item v-for="(swiper, index) in sys.banners" :key="index">
           <image :src="swiper" />
         </swiper-item>
       </swiper>
       <!-- 导航 -->
       <nav class="nav">
-        <a class="link" href="/pages/special/special">特色<br>活动</a>
-        <a class="link" href="/pages/event/event">创客<br>联盟</a>
-        <a class="link" href="/pages/map/map">街区<br>导览</a>
+        <a class="link" href="/pages/special/special">
+          <div class="inner">
+            <span>园区</span>
+            <span>动态</span>
+          </div>
+        </a>
+        <a class="link" href="/pages/map/map">
+          <div class="inner">
+            <span>街区</span>
+            <span>导览</span>
+          </div>
+        </a>
       </nav>
     </div>
     <div class="introduction">

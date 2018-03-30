@@ -1,7 +1,14 @@
+export const iconPaths = [
+  '/static/icons/icon-design-default.png',
+  '/static/icons/icon-diy-default.png',
+  '/static/icons/icon-food-default.png',
+  '/static/icons/icon-display-default.png',
+  '/static/icons/icon-toilet-default.png',
+]
+
 export const marker = {
   width: 24,
-  height: 24,
-  iconPath: '/static/icons/icon-coordinate-default.png',
+  height: 37,
   iconPathToggle(){
     const {iconPath} = this
     if(iconPath.includes('default')){

@@ -16,7 +16,7 @@
     </div>
     <!-- 特色活动 -->
     <div class="event-wrap">
-      <h2 class="title">特色活动</h2>
+      <h2 class="title">园区动态</h2>
       <scroll-view class="event-list"
         scroll-y
         :bindscrolltolower="loadMore">

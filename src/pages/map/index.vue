@@ -29,9 +29,9 @@
         :scale="30"></map>
     </div>
     <!-- 商户 -->
-    <div class="shop-wrap">
-      <div class="total">
-        <span>共有{{total}}个商户</span>
+    <div class="shop-wrap" :class="[fullscreen]">
+      <div class="total" @click="shopSwitch">
+        <span>{{tips}}</span>
         <!-- <image src="/static/icons/icon-down.png"/> -->
       </div>
       <scroll-view 
@@ -44,7 +44,7 @@
           :key="index"
           :id="shop.id"
           :class="{active: shop.id === markerId}"
-          @click="linkTo('shop', shop.shopId)">
+          @click="linkToShopDetail(shop)">
           <image :src="shop.imgUrl" mode="scaleToFill" />
           <h2 class="name">{{shop.title}}</h2>
         </view>
@@ -55,7 +55,7 @@
 
 <script>
   import {baseMixin} from '@/common/js/mixin'
-  import {marker} from '@/common/js/config'
+  import {marker, iconPaths} from '@/common/js/config'
   import {shops} from './shops'
   import {url_shop_category, url_shop_list} from '@/api/urls'
   import {setPreview} from '@/common/js/setPreview'
@@ -69,17 +69,28 @@
         shops: [], // 商家
         markerId: '', // 用于标记的ID（不能使用纯数字的ID，格式化为shop-[id]这种格式）
         categoryId: '', // 用于导航的ID（不能使用纯数字的ID，格式化为category-[id]这种格式）
+        isFullscreen: false,
       }
     },
     computed: {
       total(){
         return this.shops.length
       },
+      fullscreen(){
+        return this.isFullscreen ? 'fullscreen' : ''
+      },
+      tips(){
+        return `共有${this.total}个${this.currentCategory == 5 ? '厕所' : '商户'}`
+      },
     },
     onLoad(){
       this.getCategories()
     },
     methods: {
+      // 商户开关
+      shopSwitch(){
+        this.isFullscreen = !this.isFullscreen
+      },
       // 获取导航信息
       getCategories(){
         this.showLoading()
@@ -133,12 +144,19 @@
               shop.id = `shop-${id}`
               shop.imgUrl = setPreview(preview)
               shop.title = shop_name
+              shop.iconPath = iconPaths[categoryId - 1]
 
-              return Object.assign({}, shop, marker)
+              return Object.assign({}, marker, shop)
             })
             this.hideLoading()
           }
         })
+      },
+      // 进入商家详情
+      linkToShopDetail(shop){
+        const {cat_id} = shop
+        if(cat_id == 5) return // 公共服务类，没有详情
+        this.linkTo('shop', shop.shopId)
       },
       // 选择标记点
       selectMarker(map){

@@ -1,7 +1,7 @@
 <template>
   <div class="page shop">
     <!-- 轮播图 -->
-    <swiper :indicator-dots="true" indicator-color="#000" indicator-active-color="#fff">
+    <swiper :indicator-dots="true" indicator-color="#000" indicator-active-color="#fff" :autoplay="true">
       <swiper-item v-for="(swiper, index) in shop.albums" :key="index">
         <image mode="aspectFill" :src="swiper" />
       </swiper-item>
