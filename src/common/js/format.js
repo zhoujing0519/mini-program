@@ -24,7 +24,7 @@ export const formatTime = (timeStamp, pattern) => {
 // 格式化图片
 export const formatImage = str => {
   str = str.replace(/<img/gi, '<img style="max-width: 100%"')
-  str = str.replace(/src=\"\./, 'src="https://yunhe5.horsevision.cn/miniprogram/web')
+  str = str.replace(/src=\"\./gi, 'src="https://yunhe5.horsevision.cn/miniprogram/web')
 
   return str
 }
