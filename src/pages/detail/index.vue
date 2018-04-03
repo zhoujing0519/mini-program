@@ -10,7 +10,7 @@
 
 <script>
   import {url_article_detail} from '@/api/urls'
-  import {formatTime} from '@/common/js/format'
+  import {formatTime, formatImage} from '@/common/js/format'
   import {baseMixin} from '@/common/js/mixin'
 
   export default {
@@ -41,8 +41,11 @@
             this.article = (({title, add_time, content}) => ({
               title,
               updatetime: formatTime(add_time, '-'),
-              content,
+              content: formatImage(content),
+              // content,
             }))(article)
+
+            console.log(this.article.content)
           }
         })
         .catch(err => {
